@@ -7,5 +7,3 @@ InstructLab uses a combination of these processes:
     Taxonomy-driven data curation
     Large-scale synthetic data generation
     A multi-phased instruction-tuning method
-
-Let’s examine the InstructLab approach carefully, breaking it down step by step.
