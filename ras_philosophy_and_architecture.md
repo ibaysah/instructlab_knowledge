@@ -1,4 +1,5 @@
 Architect for Error Reporting and Fault Isolation
+
 It is not feasible to detect or isolate every possible fault or combination of faults that a server
 might experience, though it is important to invest in error detection and build a coherent
 architecture for how errors are reported and faults isolated. The sub-section on processor and
@@ -14,7 +15,9 @@ and a solid fault is only an issue if it is noticed.
 In general, I/O adapters may also have less hardware error detection capability where they can
 rely on a software protocol to detect and recover from faults when such protocols are used.
 
+
 Leverage Technology and Design for Soft Error Management
+
 In a very real sense errors detected can take several forms. The most obvious is a functional fault
 in the hardware – a silicon defect, or a worn component that over time has failed.
 Another kind of failure is what is broadly classified as a soft error. Soft errors are faults that
@@ -50,7 +53,9 @@ noticed quickly enough to allow processor operations to be retried. Where retry 
 would be expected for temporary events, system operation continues without application
 outages.
 
+
 Deploy Strategic Spare Capacity to Self-Heal Hardware
+
 Techniques that protect against soft errors are of limited protection against solid faults due to a
 real hardware failure. A single bit error in a cache, for example can be continually corrected by
 most ECC codes that allow double-bit detection and single bit correction.
@@ -73,7 +78,9 @@ With the general category of self-healing can be the use of spares. Redundancy c
 deployed to avoid outages. The concepts are related but there are differences between
 redundancy and use of spares in the Power approach.
 
+
 Redundant Definition
+
 Redundancy is generally a means of continuing operation in the presence of certain faults by
 providing more components/capacity than is needed to avoid outages but where a service action
 will be taken to replace the failed component after a fault.
@@ -81,14 +88,15 @@ Sometimes redundant components are not actively in use unless a failure occurs. 
 processor may only actively use one clock source at a time even when redundant clock sources
 are provided.
 In contrast, fans and power supplies are typically all active in a system. If a system is said to
-have “n+1” fan redundancy, for example, all “n+1” fans will normally be active in a system
-Power10 processor-based systems RAS Page 37
+have “n+1” fan redundancy, for example, all “n+1” fans will normally be active in a system 
 absence a failure. If a fan fails occurs, the system will run with “n” fans. In cases where there are
 fans or power supply failures, power and thermal management code may compensate by
 increasing fan speed or making other adjustments according to operating conditions per power
 management mode and power/thermal management policy.
 
+
 Spare Definition
+
 A spare component is similar in nature though when a “spare is successfully used” the system
 can continue to operate without the need to replace the component.
 As an example, for voltage regulator output modules, if five output phases are needed to
@@ -100,7 +108,9 @@ VRM could experience another phase failure with no outage. This maintains the re
 redundancy. Should a second phase fail, a “redundant” phase would then have been said to fail
 and a call-out for repair would be made.
 
+
 Focus on OS Independence
+
 Because IBM Power has long been designed to support multiple operating systems, the hardware
 RAS design is intended to allow the hardware to take care of the hardware largely independent of
 any operating system involvement in the error detection or fault isolation (excluding I/O adapters
@@ -123,7 +133,6 @@ While building a strong base of availability for the computational elements such
 processors and memory is important, it is hardly sufficient to achieve application availability.
 The failure of a fan, a power supply, a voltage regulator, or I/O adapter might be more likely
 than the failure of a processor module designed and manufactured for reliability.
-Power10 processor-based systems RAS Page 38
 Scale-out servers will maintain redundancy in the power and cooling subsystems to avoid system
 outages due to common failures in those areas. Concurrent repair of these components is also
 provided.
@@ -136,9 +145,13 @@ components themselves are highly reliable and meant to last.
 This level of RAS investment extends beyond what is expected and often what is seen in other
 server designs. For example, at the system level such selective sparing may include such
 elements as a spare voltage phase within a voltage regulator module.
+
+
 Error Reporting and Handling
 
+
 First Failure Data Capture Architecture
+
 Power processor-based systems are designed to handle multiple software environments
 including a variety of operating systems. This motivates a design where the reliability and
 response to faults is not relegated to an operating system.
@@ -164,7 +177,9 @@ severity and handle faults with the minimum impact possible. Such a structure fo
 can be abstractly illustrated by the figure below and is discussed throughout the rest of this
 section.
 
+
 First Failure Data Capture Analysis (Processor Runtime Diagnostics)
+
 The first failure data capture design is meant for catching faults during run-time as they occur
 and provide isolation, mitigations and other actions at the time of detection. To provide full
 isolation, and take appropriate service actions, code is run which accesses the fault information
@@ -205,7 +220,9 @@ The system service processors are also still monitored at run-time by the hyperv
 report errors if the service processors are not communicating. The Power10 based servers
 maintain the Power9 design.
 
+
 Periodic Processor Exerciser/Diagnostics Program (Runtime Processor Diagnostics)
+
 As hyperscalers consolidate more and more computing power some have expressed a concern
 about the need to run periodic diagnostics for processors in addition to what is provided by the
 built-in error detection and fault isolation capabilities. Such diagnostics might better isolate
@@ -263,7 +280,6 @@ next level of support with any questions.
 The server operator can control if and how the runtime diagnostics are used. To take advantage
 of these periodic processor diagnostics in Power9 and Power10 with the FW 1050 release, or
 later, customers should verify that the function is enabled with the option desired.
-Power10 processor-based systems RAS Page 42
 For Power10, RPD runs in a special service partition created by the PowerVM hypervisor. In the
 background, using limited cycles, PowerVM can assign processor cores one at a time to the
 service partition to assess for faults while customer workload is running.
@@ -273,12 +289,16 @@ modes:
 2. Staggered – Periodically test all the processors and begin again when finished.
 3. Scheduled – Periodically test processors only during a scheduled time window each day.
 4. Disabled – Do not run
+
 Generally, Power10 servers shipping with RPD will have RPD enabled by default in the
 Staggered mode. However, Because RPD requires system resources, servers with less than
 128G of installed memory will default to Disabled mode. Depending on the system
 configuration and the RPD mode selected, the testing may take multiple days to exercise all
 processor cores.
+
+
 PowerVM Partitioning and Outages
+
 The PowerVM hypervisor provides logical partitioning allowing multiple instances of an
 operating system to run in a server. At a high level, a server with PowerVM runs with a single
 copy of the PowerVM hypervisor regardless of the number of CEC nodes or partitions.
